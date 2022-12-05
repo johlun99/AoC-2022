@@ -49,7 +49,6 @@ stacks = [
 for move in movements:
     temp = []
     for i in range(move[0]):
-        # stacks[move[2] - 1].append(stacks[move[1] - 1].pop())
         temp.append(stacks[move[1] - 1].pop())
 
     temp = temp[::-1]
