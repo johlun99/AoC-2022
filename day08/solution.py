@@ -55,12 +55,6 @@ def checkVisibleTree(trees, x, y):
     return False
 
 def checkScenicScore(trees, x, y):
-    if x == 1 and y == 22221:
-        print(trees)
-        print("HEEERE")
-        print("X: " + str(x) + " Y: " + str(y))
-        print("Height: " + str(trees[y][x]))
-
     temp = 0
     score = 0
     for i in range(x - 1, -1, -1):
@@ -73,8 +67,6 @@ def checkScenicScore(trees, x, y):
         if trees[y][i] >= trees[y][x]:
             break
 
-    print("Score: " + str(score))
-    print("Temp: " + str(temp))
     score *= temp
     temp = 0
 
@@ -83,8 +75,6 @@ def checkScenicScore(trees, x, y):
         if trees[i][x] >= trees[y][x]:
             break
 
-    print("Score: " + str(score))
-    print("Temp: " + str(temp))
     score *= temp
     temp = 0
 
@@ -93,8 +83,6 @@ def checkScenicScore(trees, x, y):
         if trees[i][x] >= trees[y][x]:
             break
 
-    print("Score: " + str(score))
-    print("Temp: " + str(temp))
     score *= temp
 
     return score
