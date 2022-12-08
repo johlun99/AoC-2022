@@ -1,5 +1,6 @@
 with open("input.txt", "r") as f:
     trees = []
+    
     for line in f.readlines():
         row = []
         for digit in line:
@@ -9,6 +10,7 @@ with open("input.txt", "r") as f:
 
 def countEdges(trees):
     count = 0
+
     for y in range(len(trees)):
         for x in range(len(trees[y])):
             if y == 0 or x == 0:
@@ -17,10 +19,13 @@ def countEdges(trees):
                 count += 1
             elif y == len(trees) - 1:
                 count += 1
+
     return count
+
 
 def checkVisibleTree(trees, x, y):
     visible = True
+
     for i in range(x - 1, -1, -1):
         if trees[y][i] >= trees[y][x]:
             visible = False
@@ -57,6 +62,7 @@ def checkVisibleTree(trees, x, y):
 def checkScenicScore(trees, x, y):
     temp = 0
     score = 0
+
     for i in range(x - 1, -1, -1):
         score += 1
         if trees[y][i] >= trees[y][x]:
@@ -87,14 +93,17 @@ def checkScenicScore(trees, x, y):
 
     return score
 
+
 def countInnerTrees(trees):
     count = 0
+
     for y in range(1, len(trees) - 1):
         for x in range(1, len(trees[y]) - 1):
             if checkVisibleTree(trees, x, y):
                 count += 1
 
     return count
+
 
 def countScenicScore(trees):
     highestScore = 0
@@ -105,6 +114,7 @@ def countScenicScore(trees):
                 highestScore = currentScore
 
     return highestScore
+
 
 print("Part 1: " + str((countEdges(trees) + countInnerTrees(trees))))
 print("Part 2: " + str(countScenicScore(trees)))
