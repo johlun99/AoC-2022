@@ -1,82 +1,57 @@
-import operator
+import time
+from copy import deepcopy
 
-lines = [line.strip() for line in open("input.txt", "r")]
+START_TIME= time.time()
+data = open("input.txt", "r").read().strip()
+lines = [x for x in data.split('\n')]
 
-monkeys = {}
-currentMonkey = {}
-currentId = 0
+ITEMS = []
+OPERATIONS = []
+DIVISIBLES = []
+IS_TRUE = []
+IS_FALSE = []
+for monkey in data.split('\n\n'):
+    id_, items, op, test, is_true, is_false = monkey.split('\n')
+    ITEMS.append([int(i) for i in items.split(':')[1].split(',')])
+    words = op.split()
+    op = ''.join(words[-3:])
+    OPERATIONS.append(lambda old,op=op:eval(op))
+    DIVISIBLES.append(int(test.split()[-1]))
+    IS_TRUE.append(int(is_true.split()[-1]))
+    IS_FALSE.append(int(is_false.split()[-1]))
 
-for line in lines:
-    if len(line) == 0:
-        monkeys[currentId] = currentMonkey
-        currentMonkey = {}
+START = deepcopy(ITEMS)
 
-    elif line.startswith("Monkey"):
-        currentId = int(line.split(" ")[1].replace(":", ""))
+lcm = 1
+for x in DIVISIBLES:
+    lcm = (lcm*x)
 
-    elif line.startswith("Starting"):
-        parts = line.split(": ")
-        currentMonkey["items"] = [int(item) for item in parts[1].split(", ")]
+for part in [1,2]:
+    C = [0 for _ in range(len(ITEMS))]
+    ITEMS = deepcopy(START)
+    for t in range(20 if part==1 else 10000):
+        for i in range(len(ITEMS)):
+            for item in ITEMS[i]:
+                #print(i,item)
+                C[i] += 1
+                item = OPERATIONS[i](item)
+                if part == 2:
+                    item %= lcm
 
-    elif line.startswith("Operation"):
-        currentMonkey["operation"] = line.split(": ")[1].replace("new = ", "")
+                if part == 1:
+                    item = (item // 3)
+                if item % DIVISIBLES[i] == 0:
+                    ITEMS[IS_TRUE[i]].append(item)
+                else:
+                    ITEMS[IS_FALSE[i]].append(item)
+            ITEMS[i] = []
 
-    elif line.startswith("Test"):
-        currentMonkey["test"] = int(line.split(": ")[1].split(" ")[-1])
+    if part == 1:
+        print("Part 1")
 
-    elif line.startswith("If true"):
-        currentMonkey["true"] = line.split(" ")[-1]
+    else:
+        print("Part 2")
 
-    elif line.startswith("If false"):
-        currentMonkey["false"] = line.split(" ")[-1]
+    print(sorted(C)[-1] * sorted(C)[-2])
 
-monkeys[currentId] = currentMonkey
-monkeyInspectCount = {}
-
-for monkey in monkeys:
-    monkeyInspectCount[monkey] = 0
-
-def iterateMonkeys():
-    toBeMoved = {}
-    for monkey in monkeys:
-        index = monkey
-
-        for item in monkeys[index]["items"]:
-            monkeyInspectCount[monkey] += 1
-            worryLevel = int(eval(monkeys[index]["operation"].replace("old", str(item))) / 3)
-
-            if worryLevel % monkeys[index]["test"] == 0:
-                targetMonkey = int(monkeys[index]["true"])
-
-            else:
-                targetMonkey = int(monkeys[index]["false"])
-
-            """ print(worryLevel)
-            monkeys[targetMonkey]["items"].append(worryLevel)
-            monkeys[index]["items"].remove(item)
-            """
-            if targetMonkey in toBeMoved:
-                toBeMoved[targetMonkey].append({"item": item, "worry": worryLevel})
-            else:
-                toBeMoved[targetMonkey] = [{"item": item, "worry": worryLevel}]
-
-        for target in toBeMoved:
-            for item in toBeMoved[target]:
-                monkeys[target]["items"].append(item["worry"])
-                monkeys[index]["items"].remove(item["item"])
-
-        toBeMoved = {}
-
-
-for i in range(20):
-    iterateMonkeys()
-
-for index in monkeys:
-    print("ID: " + str(index))
-    print("Items")
-    print(monkeys[index]["items"])
-
-monkeyInspectCountSorted = sorted(monkeyInspectCount.items(), key=lambda x:x[1], reverse=True)
-answer = monkeyInspectCountSorted[0][1] * monkeyInspectCountSorted[1][1]
-
-print("Part1: " + str(answer))
+print("Execution time: " + str(time.time() - START_TIME))
