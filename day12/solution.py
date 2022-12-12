@@ -12,14 +12,14 @@ HEIGHT = len(MAP)
 WIDTH = len(MAP[0])
 
 E = [[0 for _ in range(WIDTH)] for _ in range(HEIGHT)]
-for r in range(HEIGHT):
-    for c in range(WIDTH):
-        if MAP[r][c] == "S":
-            E[r][c] = 1
-        elif MAP[r][c] == "E":
-            E[r][c] = 26
+for y in range(HEIGHT):
+    for x in range(WIDTH):
+        if MAP[y][x] == "S":
+            E[y][x] = 1
+        elif MAP[y][x] == "E":
+            E[y][x] = 26
         else:
-            E[r][c] = ord(MAP[r][c]) - ord("a") + 1
+            E[y][x] = ord(MAP[y][x]) - ord("a") + 1
 
 def solve(part):
     queue = deque()
